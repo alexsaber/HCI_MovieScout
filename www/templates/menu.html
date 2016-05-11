@@ -1,0 +1,41 @@
+<ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button></ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="side-menu21"></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="left" id="side-menu21">
+        <ion-header-bar class="bar-stable">
+            <div class="title">Menu</div>
+        </ion-header-bar>
+        <ion-content padding="false" class="side-menu-left has-header">
+            <ion-list>
+                <ion-item class="item-icon-right" ui-sref="menu.home" menu-close="">Home
+                    <i class="icon ion-android-home"></i>
+                </ion-item>
+                <ion-item class="item-divider">Search</ion-item>
+                <ion-item class="item-icon-right" ui-sref="menu.page" menu-close="">Global Search
+                    <i class="icon ion-android-search"></i>
+                </ion-item>
+                <ion-item class="item-divider">Lists</ion-item>
+                <ion-item class="item-icon-right" ui-sref="menu.watchedpage" menu-close="">Watched
+                    <i class="icon ion-android-film"></i>
+                </ion-item>
+                <ion-item class="item-icon-right" ui-sref="menu.wanted" menu-close="">Wanted
+                    <i class="icon ion-android-film"></i>
+                </ion-item>
+                <ion-item class="item-icon-right">Owned
+                    <i class="icon ion-android-film"></i>
+                </ion-item>
+                <ion-item class="item-divider"></ion-item>
+                <ion-item class="item-icon-right">Settings
+                    <i class="icon ion-android-settings"></i>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>
