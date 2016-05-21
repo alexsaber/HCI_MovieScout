@@ -1,0 +1,36 @@
+<ion-view title="Search" id="globalSrch">
+    <ion-content padding="true" class="has-header">
+        
+        
+        <form class="list">
+            <label  class="item item-input">
+                <input id="searchTitle" type="search" placeholder="Title"> <br>
+                
+            </label>
+            
+            <label  class="item item-input">
+                <input id="searchYear" type="search" placeholder="Year">
+            </label>
+                
+
+            <label class="item item-select">
+                <span class="input-label">Type</span>
+                <select id="selectedType">
+                    <option>Any</option>
+                    <option>Movie</option>
+                    <option>Series</option>
+                    <option>Episode</option>
+                </select>
+            </label>
+
+            
+            <button type="button" ng-click="search()"  class="button button-block button-positive" >
+                Search
+            </button>
+        </form>
+        
+        
+        
+
+    </ion-content>
+</ion-view>

@@ -8,9 +8,7 @@ angular.module('app.routes', [])
   // Each state's controller can be found in controllers.js
   $stateProvider
     
-  
-
-      .state('menu.home', {
+  .state('menu.home', {
     url: '/page1',
     views: {
       'side-menu21': {
@@ -29,6 +27,25 @@ angular.module('app.routes', [])
     }
     }
   })
+  
+  .state('menu.globalSrchResults', {
+    url: '/globalSrchResults',
+    views: {
+      'side-menu21': {
+    templateUrl: 'templates/globalSrchResults.html',
+    controller: 'globalSrchResultsCtrl'
+    }
+    }
+  })
+  
+    .state('menu.globalSrch', {
+    url: '/globalSrch',
+    views: {
+      'side-menu21': {
+    templateUrl: 'templates/globalSrch.html',
+    controller: 'globalSrchCtrl'
+    }}
+  })
 
   .state('menu.wanted', {
     url: '/page3',
@@ -45,14 +62,9 @@ angular.module('app.routes', [])
     abstract:true
   })
 
-  .state('menu.page', {
-    url: '/page4',
-    views: {
-      'side-menu21': {
-    templateUrl: 'templates/page.html',
-    controller: 'pageCtrl'
-    }}
-  })
+
+  
+
   
   .state('menu.watchedpage', {
     url: '/watchedpage',
