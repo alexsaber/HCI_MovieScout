@@ -18,6 +18,16 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('menu.owned',{
+    url:'/owned',
+    views: {
+      'side-menu21' : {
+        templateUrl: 'templates/owned.html',
+        controller: 'ownedCtrl'
+      }
+    }
+  })
+
   .state('menu.moviedescription', {
     url: '/page2',
     views: {

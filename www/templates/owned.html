@@ -1,9 +1,15 @@
-<ion-view title="Results" id="page2">
-    <ion-content padding="true" class="has-header"> 
-       
-        <ion-list>
+<ion-view title="Owned" id="ownedpage">
+     <ion-content padding="true" class="has-header">
+        <form class="list">
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="search" placeholder="Search">
+            </label>
+        </form>
+        
+          <ion-list>
             
-        <div ng-repeat="film in foundFilms" class="list card">
+        <div ng-repeat="film in ownedFilms" class="list card">
             <div class="item item-divider">{{ film.Title }} ({{ film.Year }})</div>
             <div class="item item-body">
                 <div>
@@ -13,13 +19,13 @@
                     <p>{{ film.Plot }} </p>
                 </div>
                 <div class="button-bar">
-                   <a ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive  button-block icon ion-android-add"></a>
+                   <a ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive  button-block icon ion-android-remove"></a>
                     <button id="wanted-button6" class="button button-positive  button-block icon ion-android-calendar"></button>
                     <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button button-positive  button-block icon ion-information-circled"></a>
                 </div>
             </div>
         </div>
         </ion-list>
-        
+ 
     </ion-content>
 </ion-view>

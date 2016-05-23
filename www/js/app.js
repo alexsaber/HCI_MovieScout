@@ -19,5 +19,22 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    
+    if(localStorage.getItem("speichern") != "true")
+    {
+      console.log("in if");
+      var wanted = new Array();
+      localStorage.setItem("wantedcount",0);
+      localStorage["wanted"] = JSON.stringify(wanted);
+    
+      var watched = new Array();
+      localStorage.setItem("watchedcount",0);
+      localStorage["watched"] = JSON.stringify(watched);
+    
+      var owned = new Array();
+      localStorage.setItem("ownedcount",0);
+      localStorage["owned"] = JSON.stringify(owned);
+    }
+    
   });
 })

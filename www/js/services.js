@@ -9,6 +9,26 @@ angular.module('app.services', [])
 }])
 
 
+.service('savedwatched', function() {
+ return {
+   watchedM: [],
+   getWatchedM: function() {
+     return this.watchedM;
+   },
+   setWatchedM: function(watchedM) {
+     this.watchedM = watchedM;
+   }
+ }
+})
+
+.service('movies', function()
+{
+  return JSON.parse(localStorage["wanted"]);
+  //return localStorage["wanted"];
+})
+
+
+
 .service('filmData', function() {
  return {
    film: {},

@@ -10,11 +10,138 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('globalSrchResultsCtrl', function($scope, $state, $ionicLoading, foundFilmsData, filmData) {
+.controller('globalSrchResultsCtrl', function($scope, $state, $ionicLoading, $ionicPopup, foundFilmsData, filmData) {
   console.log('entered globalSrchResultsCtrl ');
    //console.log('foundFilmsData.getFoundFilms() ' + foundFilmsData.getFoundFilms());
   $scope.foundFilms = foundFilmsData.getFoundFilms();
   $ionicLoading.hide();
+  
+  
+  $scope.addToWanted = function(film){
+    //console.log('film is asdasdad' + film);
+    $scope.data1 = {wanted : false}
+    $scope.data2= {watched : false};
+    $scope.data3 = {owned : false};
+    
+    localStorage.setItem("checkwanted", false);
+    localStorage.setItem("checkwatched", false);
+    localStorage.setItem("checkowned", false);
+    
+    filmData.setFilm(film);
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Add to',
+      template: '<div ng-controller="globalSrchResultsCtrl"><ion-checkbox ng-model="data2.watched" ng-click="checked(2)">Watched</ion-checkbox>'+
+      '<ion-checkbox ng-model="data1.wanted" ng-click="checked(1)">Wanted</ion-checkbox>'+
+      '<ion-checkbox ng-model="data3.owned" ng-click="checked(3)">Owned</ion-checkbox></div>',   
+      okText: 'Add'
+    });
+    
+    confirmPopup.then(function(res)
+    {
+      if(res)
+      {
+        
+        
+        if(localStorage.getItem("checkwanted") == "true")
+        {
+         console.log("saving wanted");
+  
+          localStorage.setItem("speichern", true);
+          var oldwanted = JSON.parse(localStorage["wanted"]) || [];
+          var newwanted = JSON.stringify(film);
+          console.log("newwanted");
+          console.log(JSON.parse(newwanted).Title);
+          oldwanted.push(newwanted);
+          localStorage["wanted"] = JSON.stringify(oldwanted);
+         
+          localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
+          console.log(localStorage.getItem("wantedcount"));
+         
+        }
+          
+         if(localStorage.getItem("checkwatched") == "true")
+        {   
+          localStorage.setItem("speichern", true);
+          
+          var oldwatched = JSON.parse(localStorage["watched"]) || [];
+          var newwatched = JSON.stringify(film);
+         
+          console.log(JSON.parse(newwatched).Title);
+          oldwatched.push(newwatched);
+          localStorage["watched"] = JSON.stringify(oldwatched);
+         
+          localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount"))+1);
+         
+          
+          console.log("saving watched");
+        }
+        
+        
+        
+         if(localStorage.getItem("checkowned") == "true")
+        {
+          console.log("saving owned");
+          localStorage.setItem("speichern", true);
+          
+          var oldowned = JSON.parse(localStorage["owned"]) || [];
+          var newowned = JSON.stringify(film);
+         
+          //onsole.log(JSON.parse(newowned).Title);
+          oldowned.push(newowned);
+          localStorage["owned"] = JSON.stringify(oldowned);
+         
+          localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
+          console.log("LOCALSTORAGE" + parseInt(localStorage.getItem("ownedcount")))
+          
+        }
+        localStorage.setItem("checkwanted", false);
+        localStorage.setItem("checkwatched", false);
+        localStorage.setItem("checkowned", false);
+      }
+    })
+    
+    /*localStorage.setItem("Test", JSON.stringify(film));
+    var testvar = JSON.parse(localStorage.getItem("Test"));
+    console.log(testvar.Plot);*/
+    //console.log(film.Plot);
+  }
+  
+   $scope.checked = function(id)
+    {
+       if(id == 1)
+      {
+        if(localStorage.getItem("checkwanted") == "false")
+       {
+           localStorage.setItem("checkwanted", true);
+       }
+       else
+       {
+           localStorage.setItem("checkwatched", false);
+       }
+      }
+       if(id == 2)
+      {
+       if(localStorage.getItem("checkwatched") == "false")
+       {
+           localStorage.setItem("checkwatched", true);
+       }
+       else
+       {
+           localStorage.setItem("checkwatched", false);
+       }
+      }
+      if(id == 3)
+      {
+       if(localStorage.getItem("checkowned") == "false")
+       {
+           localStorage.setItem("checkowned", true);
+       }
+       else
+       {
+           localStorage.setItem("checkowned", false);
+       }
+      }
+    }
   
      $scope.goToMovieDescr = function(film){
      console.log('film is ' + film);
@@ -25,8 +152,40 @@ angular.module('app.controllers', [])
   
 })
    
-.controller('wantedCtrl', function($scope) {
-
+.controller('wantedCtrl', function($scope, $state, filmData) {
+  
+    console.log("wanted controller");
+     
+         $scope.showelements = function(){
+          console.log("in wanted movies");
+          //var wantedmovies = JSON.parse(localStorage["wanted"]) || [];
+          
+          var len = parseInt(localStorage.getItem("wantedcount"));
+          var wantedFilms = new Array();
+          for(i = 0; i < len; i++)
+          {
+              var holder = JSON.parse(localStorage["wanted"])[i];
+              var holder2 = JSON.parse(holder);
+              wantedFilms[i] = holder2;
+             // $scope.test[i].Plot = m.Plot;
+              //console.log(JSON.parse($scope.test[i]).Plot);
+              //what now??
+          }
+          $scope.wantedFilms = wantedFilms;
+          //savedwatched.setWatchedM($scope.test);
+          
+          //$scope.testfilm = savedwatched.getWatchedM();
+         }
+              
+         $scope.showelements();
+         
+         $scope.goToMovieDescr = function(film){
+     console.log('film is ' + film);
+     filmData.setFilm(film);
+     $state.go('menu.moviedescription');
+   }  
+       
+  
 })
       
 .controller('globalSrchCtrl', function($scope, $q, $state, $ionicLoading, HttpService, filmData, foundFilmsData) {
@@ -80,7 +239,71 @@ angular.module('app.controllers', [])
   
 })
  
- .controller('watchedpageCtrl', function($scope){
+ .controller('ownedCtrl', function($scope, $state, filmData) {
+    console.log("owned controller");
+    
+    $scope.showelements = function(){
+      
+          //var wantedmovies = JSON.parse(localStorage["wanted"]) || [];
+          
+          var len = parseInt(localStorage.getItem("ownedcount"));
+          var ownedFilms = new Array();
+          for(i = 0; i < len; i++)
+          {
+              var holder = JSON.parse(localStorage["owned"])[i];
+              var holder2 = JSON.parse(holder);
+              ownedFilms[i] = holder2;
+              console.log("what the fuck?");
+             // $scope.test[i].Plot = m.Plot;
+              //console.log(JSON.parse($scope.test[i]).Plot);
+              //what now??
+          }
+          $scope.ownedFilms = ownedFilms;
+          //savedwatched.setWatchedM($scope.test);
+          
+          //$scope.testfilm = savedwatched.getWatchedM();
+         }
+              
+         $scope.showelements();
+         
+         $scope.goToMovieDescr = function(film){
+     console.log('film is ' + film);
+     filmData.setFilm(film);
+     $state.go('menu.moviedescription');
+   }  
+ })
+ 
+ 
+ .controller('watchedpageCtrl', function($scope, $state, filmData){
+          console.log("watched controller");
      
+         $scope.showelements = function(){
+      
+          //var wantedmovies = JSON.parse(localStorage["wanted"]) || [];
+          
+          var len = parseInt(localStorage.getItem("watchedcount"));
+          var watchedFilms = new Array();
+          for(i = 0; i < len; i++)
+          {
+              var holder = JSON.parse(localStorage["watched"])[i];
+              var holder2 = JSON.parse(holder);
+              watchedFilms[i] = holder2;
+             // $scope.test[i].Plot = m.Plot;
+              //console.log(JSON.parse($scope.test[i]).Plot);
+              //what now??
+          }
+          $scope.watchedFilms = watchedFilms;
+          //savedwatched.setWatchedM($scope.test);
+          
+          //$scope.testfilm = savedwatched.getWatchedM();
+         }
+              
+         $scope.showelements();
+         
+         $scope.goToMovieDescr = function(film){
+     console.log('film is ' + film);
+     filmData.setFilm(film);
+     $state.go('menu.moviedescription');
+   }  
      
  });
