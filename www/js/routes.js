@@ -19,6 +19,7 @@ angular.module('app.routes', [])
   })
 
   .state('menu.owned',{
+    cache: false,
     url:'/owned',
     views: {
       'side-menu21' : {
@@ -58,6 +59,7 @@ angular.module('app.routes', [])
   })
 
   .state('menu.wanted', {
+    cache: false,
     url: '/page3',
     views: {
       'side-menu21': {
@@ -77,6 +79,7 @@ angular.module('app.routes', [])
 
   
   .state('menu.watchedpage', {
+    cache: false,
     url: '/watchedpage',
     views: {
       'side-menu21': {
