@@ -74,9 +74,6 @@ angular.module('app.routes', [])
     abstract:true
   })
 
-
-  
-
   
   .state('menu.watchedpage', {
     cache: false,

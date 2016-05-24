@@ -1,7 +1,23 @@
 angular.module('app.controllers', [])
   
-.controller('homeCtrl', function($scope) {
+.controller('homeCtrl', function($scope, $ionicLoading, $state, HttpService, filmData) {
+  
+  $ionicLoading.show({
+    template: 'Loading...'
+  });
 
+  HttpService.getInCinema().then(function(searchFilmsRspns) {  
+    var inCinemaFims = searchFilmsRspns.data.inTheaters[1].movies;//inTheatersNow: "In Theaters Now"
+    console.log(inCinemaFims);
+    $ionicLoading.hide();
+    $scope.filmsInCinemas = inCinemaFims;
+  });
+
+   $scope.goToMovieDescr = function(film){
+     console.log('film is ' + film);
+     filmData.setFilm(film);
+     $state.go('menu.moviedescription');
+   }
 })
    
 .controller('moviedescriptionCtrl', function($scope, filmData) {
@@ -40,8 +56,6 @@ angular.module('app.controllers', [])
     {
       if(res)
       {
-        
-        
         if(localStorage.getItem("checkwanted") == "true")
         {
          console.log("saving wanted");
