@@ -78,7 +78,8 @@ angular.module('app.controllers', [])
           var Plot = inCinemaFims.simplePlot;
           console.log(Title);
           console.log(Poster);
-          var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot};
+          var IMDB = inCinemaFims.idIMDB;
+           var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
           //****
           var test1 = JSON.stringify(jsonobj);
           localStorage.setItem("speichern", true);
@@ -109,7 +110,8 @@ angular.module('app.controllers', [])
           var Poster = inCinemaFims.urlPoster;
           var Year = inCinemaFims.year;
           var Plot = inCinemaFims.simplePlot;
-           var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot};
+          var IMDB = inCinemaFims.idIMDB;
+           var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
            var test1 = JSON.stringify(jsonobj);
           var oldwatched = JSON.parse(localStorage["watched"]) || [];
            var newwatched = test1;
@@ -135,7 +137,8 @@ angular.module('app.controllers', [])
           var Poster = inCinemaFims.urlPoster;
           var Year = inCinemaFims.year;
           var Plot = inCinemaFims.simplePlot;
-           var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot};
+           var IMDB = inCinemaFims.idIMDB;
+           var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
            var test1 = JSON.stringify(jsonobj);
           var oldowned = JSON.parse(localStorage["owned"]) || [];
          // var newowned = JSON.stringify(inCinemaFims);
@@ -413,6 +416,32 @@ angular.module('app.controllers', [])
 .controller('wantedCtrl', function($scope, $state, filmData) {
   
     console.log("wanted controller");
+     
+        $scope.removeFromList = function(film)
+        {
+          console.log("removeFromlist");
+          //console.log(film.imdbID);
+          var len = parseInt(localStorage.getItem("wantedcount"));
+       
+          var old = JSON.parse(localStorage["wanted"]) || [];
+          for(i = 0; i < len; i++)
+          {
+            //var holder = JSON.parse(localStorage["wanted"])[i];
+            
+            //var holder = JSON.stringify(old)[i];
+            var holder = JSON.parse(localStorage["wanted"])[i];
+            var holder2 = JSON.parse(holder);
+            console.log("TESTTEST: " + holder2.imdbID);
+            if(film.imdbID == holder2.imdbID)
+            {
+              console.log("trying to remove movie" + film.imdbID + film.Title);
+                old.splice(i,1);
+            }
+           
+          }
+           localStorage["wanted"] = JSON.stringify(old);
+           localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))-1);
+        }
      
          $scope.showelements = function(){
           console.log("in wanted movies");

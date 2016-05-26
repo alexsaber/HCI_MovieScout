@@ -84,6 +84,15 @@ angular.module('app.routes', [])
     controller: 'watchedpageCtrl'
     }}
   })
+  
+    .state('menu.settings', {
+    url: '/settings',
+    views: {
+      'side-menu21': {
+    templateUrl: 'templates/settings.html',
+    controller: 'settingsCtrl'
+    }}
+  })
 
 $urlRouterProvider.otherwise('/side-menu21/page1')
 

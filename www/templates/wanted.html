@@ -19,7 +19,7 @@
                     <p>{{ film.Plot }} </p>
                 </div>
                 <div class="button-bar">
-                   <a ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive  button-block icon ion-android-remove"></a>
+                   <a ng-click="removeFromList({{film}})" id="wanted-button5" class="button button-positive  button-block icon ion-android-remove"></a>
                     <a ng-click="addToCalendar( {{film}} )" ng-controller="globalSrchResultsCtrl" id="calendar-button1" class="button button-positive  button-block icon ion-android-calendar"></a>
                      <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button button-positive  button-block icon ion-information-circled"></a>
                 </div>
