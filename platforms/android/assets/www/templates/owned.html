@@ -1,0 +1,31 @@
+<ion-view title="Owned" id="ownedpage">
+     <ion-content padding="true" class="has-header">
+        <form class="list">
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="search" placeholder="Search">
+            </label>
+        </form>
+        
+          <ion-list>
+            
+        <div ng-repeat="film in ownedFilms" class="list card">
+            <div class="item item-divider">{{ film.Title }} ({{ film.Year }})</div>
+            <div class="item item-body">
+                <div>
+                    <img src='{{ film.Poster }}' width="50%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
+                </div>
+                <div id="wanted-markdown1" style="color:#000000;">
+                    <p>{{ film.Plot }} </p>
+                </div>
+                <div class="button-bar">
+                   <a ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive  button-block icon ion-android-remove"></a>
+                    <button id="wanted-button6" class="button button-positive  button-block icon ion-android-calendar"></button>
+                    <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button button-positive  button-block icon ion-information-circled"></a>
+                </div>
+            </div>
+        </div>
+        </ion-list>
+ 
+    </ion-content>
+</ion-view>
