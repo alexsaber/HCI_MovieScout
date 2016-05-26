@@ -8,6 +8,30 @@ angular.module('app.controllers', [])
     template: 'Loading...'
   });
   
+  $scope.addToCalendar = function (movie) {
+
+      $ionicLoading.show({
+          template: 'Loading...'
+      });
+
+      var title = movie.title;
+      var location = '';
+      var notes = '';
+      var startDate = new Date();
+      var endDate = new Date();
+
+      // clean up the dates a bit
+      startDate.setMinutes(0);
+      endDate.setMinutes(0);
+      startDate.setSeconds(0);
+      endDate.setSeconds(0);
+
+      // add a few hours to the dates, JS will automatically update the date (+1 day) if necessary
+      startDate.setHours(startDate.getHours() + 24);
+      endDate.setHours(endDate.getHours() + 26);
+      window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
+      $ionicLoading.hide();
+  };
   
   HttpService.getInCinema().then(function(searchFilmsRspns) {  
     var inCinemaFims = searchFilmsRspns.data.inTheaters[1].movies;//inTheatersNow: "In Theaters Now"
@@ -146,26 +170,6 @@ angular.module('app.controllers', [])
       filmData.setFilm(film);
       $state.go('menu.moviedescription');
   };
-
-  $scope.addToCalendar = function (movie) {
-
-      var title = movie.title;
-      var location = '';
-      var notes = '';
-      var startDate = new Date();
-      var endDate = new Date();
-
-      // clean up the dates a bit
-      startDate.setMinutes(0);
-      endDate.setMinutes(0);
-      startDate.setSeconds(0);
-      endDate.setSeconds(0);
-
-      // add a few hours to the dates, JS will automatically update the date (+1 day) if necessary
-      startDate.setHours(startDate.getHours() + 24);
-      endDate.setHours(endDate.getHours() + 26);
-      window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
-  };
 })
    
    
@@ -173,7 +177,7 @@ angular.module('app.controllers', [])
   console.log('entered moviedescriptionCtrl ');
   $scope.film = filmData.getFilm();
 
-  $scope.addToCalendar1 = function () {
+  $scope.addToCalendar = function () {
 
       var mov = filmData.getFilm();
       var title = mov.Title;
@@ -202,7 +206,31 @@ angular.module('app.controllers', [])
    //console.log('foundFilmsData.getFoundFilms() ' + foundFilmsData.getFoundFilms());
   $scope.foundFilms = foundFilmsData.getFoundFilms();
   $ionicLoading.hide();
-  
+
+  $scope.addToCalendar = function (movie) {
+
+      $ionicLoading.show({
+          template: 'Loading...'
+      });
+
+      var title = movie.Title;
+      var location = '';
+      var notes = '';
+      var startDate = new Date();
+      var endDate = new Date();
+
+      // clean up the dates a bit
+      startDate.setMinutes(0);
+      endDate.setMinutes(0);
+      startDate.setSeconds(0);
+      endDate.setSeconds(0);
+
+      // add a few hours to the dates, JS will automatically update the date (+1 day) if necessary
+      startDate.setHours(startDate.getHours() + 24);
+      endDate.setHours(endDate.getHours() + 26);
+      window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
+      $ionicLoading.hide();
+  };
   
   $scope.addToWanted = function(film){
     //console.log('film is asdasdad' + film);
