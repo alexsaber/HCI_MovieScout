@@ -1,7 +1,7 @@
 angular.module('app.controllers', [])
   
-.controller('homeCtrl', function($scope, $ionicLoading, $state, HttpService, filmData) {
-  
+.controller('homeCtrl', function($scope, $ionicLoading, $state, $ionicPopup, HttpService, filmData) {
+ 
   $ionicLoading.show({
     template: 'Loading...'
   });
@@ -12,17 +12,187 @@ angular.module('app.controllers', [])
     $ionicLoading.hide();
     $scope.filmsInCinemas = inCinemaFims;
   });
+  
+  $scope.addToList = function(film){
+    //console.log('film is asdasdad' + film);
+    console.log("in addToList homeCTRL");
+    $scope.data11 = {wanted : false}
+    $scope.data22= {watched : false};
+    $scope.data33 = {owned : false};
+    
+    localStorage.setItem("checkwanted", false);
+    localStorage.setItem("checkwatched", false);
+    localStorage.setItem("checkowned", false);
+    
+    filmData.setFilm(film);
+    var confirmPopup1 = $ionicPopup.confirm({
+      title: 'Add to',
+      template: '<div ng-controller="homeCtrl"><ion-checkbox ng-model="data22.watched" ng-click="checked1(2)">Watched</ion-checkbox>'+
+      '<ion-checkbox ng-model="data11.wanted" ng-click="checked1(1)">Wanted</ion-checkbox>'+
+      '<ion-checkbox ng-model="data33.owned" ng-click="checked1(3)">Owned</ion-checkbox></div>',   
+      okText: 'Add'
+    });
+    
+    confirmPopup1.then(function(res)
+    {
+      console.log("confirmPopup1 homeCTRL");
+      if(res)
+      {
+        if(localStorage.getItem("checkwanted") == "true")
+        {
+         console.log("saving wanted");
+  
+          localStorage.setItem("speichern", true);
+          var oldwanted = JSON.parse(localStorage["wanted"]) || [];
+          var newwanted = JSON.stringify(inCinemaFims);
+          console.log("newwanted");
+          console.log(JSON.parse(newwanted).Title);
+          oldwanted.push(newwanted);
+          localStorage["wanted"] = JSON.stringify(oldwanted);
+         
+          localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
+          console.log(localStorage.getItem("wantedcount"));
+         
+        }
+          
+         if(localStorage.getItem("checkwatched") == "true")
+        {   
+          localStorage.setItem("speichern", true);
+          
+          var oldwatched = JSON.parse(localStorage["watched"]) || [];
+          var newwatched = JSON.stringify(inCinemaFims);
+         
+          console.log(JSON.parse(newwatched).Title);
+          oldwatched.push(newwatched);
+          localStorage["watched"] = JSON.stringify(oldwatched);
+         
+          localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount"))+1);
+         
+          
+          console.log("saving watched");
+        }
+        
+        
+        
+         if(localStorage.getItem("checkowned") == "true")
+        {
+          console.log("saving owned");
+          localStorage.setItem("speichern", true);
+          
+          var oldowned = JSON.parse(localStorage["owned"]) || [];
+          var newowned = JSON.stringify(inCinemaFims);
+         
+          //onsole.log(JSON.parse(newowned).Title);
+          oldowned.push(newowned);
+          localStorage["owned"] = JSON.stringify(oldowned);
+         
+          localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
+          console.log("LOCALSTORAGE" + parseInt(localStorage.getItem("ownedcount")))
+          
+        }
+        localStorage.setItem("checkwanted", false);
+        localStorage.setItem("checkwatched", false);
+        localStorage.setItem("checkowned", false);
+      }
+    })
+    
+    /*localStorage.setItem("Test", JSON.stringify(film));
+    var testvar = JSON.parse(localStorage.getItem("Test"));
+    console.log(testvar.Plot);*/
+    //console.log(film.Plot);
+  }
+  
+   $scope.checked1 = function(id)
+    {
+      console.log("checked1 homeCTRL");
+       if(id == 1)
+      {
+        if(localStorage.getItem("checkwanted") == "false")
+       {
+           localStorage.setItem("checkwanted", true);
+       }
+       else
+       {
+           localStorage.setItem("checkwatched", false);
+       }
+      }
+       if(id == 2)
+      {
+       if(localStorage.getItem("checkwatched") == "false")
+       {
+           localStorage.setItem("checkwatched", true);
+       }
+       else
+       {
+           localStorage.setItem("checkwatched", false);
+       }
+      }
+      if(id == 3)
+      {
+       if(localStorage.getItem("checkowned") == "false")
+       {
+           localStorage.setItem("checkowned", true);
+       }
+       else
+       {
+           localStorage.setItem("checkowned", false);
+       }
+      }
+    }
+  
+  
+  $scope.goToMovieDescr = function (film) {
+      console.log('film is ' + film);
+      filmData.setFilm(film);
+      $state.go('menu.moviedescription');
+  };
 
-   $scope.goToMovieDescr = function(film){
-     console.log('film is ' + film);
-     filmData.setFilm(film);
-     $state.go('menu.moviedescription');
-   }
+  $scope.addToCalendar = function (movie) {
+
+      var title = movie.title;
+      var location = '';
+      var notes = '';
+      var startDate = new Date();
+      var endDate = new Date();
+
+      // clean up the dates a bit
+      startDate.setMinutes(0);
+      endDate.setMinutes(0);
+      startDate.setSeconds(0);
+      endDate.setSeconds(0);
+
+      // add a few hours to the dates, JS will automatically update the date (+1 day) if necessary
+      startDate.setHours(startDate.getHours() + 24);
+      endDate.setHours(endDate.getHours() + 26);
+      window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
+  };
 })
    
 .controller('moviedescriptionCtrl', function($scope, filmData) {
   console.log('entered moviedescriptionCtrl ');
   $scope.film = filmData.getFilm();
+
+  $scope.addToCalendar1 = function () {
+
+      var mov = filmData.getFilm();
+      var title = mov.Title;
+      var location = '';
+      var notes = '';
+      var startDate = new Date();
+      var endDate = new Date();
+
+      // clean up the dates a bit
+      startDate.setMinutes(0);
+      endDate.setMinutes(0);
+      startDate.setSeconds(0);
+      endDate.setSeconds(0);
+
+      // add a few hours to the dates, JS will automatically update the date (+1 day) if necessary
+      startDate.setHours(startDate.getHours() + 24);
+      endDate.setHours(endDate.getHours() + 26);
+      window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
+  };
+
 })
 
 
@@ -320,4 +490,5 @@ angular.module('app.controllers', [])
      $state.go('menu.moviedescription');
    }  
      
- });
+ })
+;
