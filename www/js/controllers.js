@@ -47,7 +47,7 @@ angular.module('app.controllers', [])
   $scope.addToCalendar1 = function () {
 
       var mov = filmData.getFilm();
-      var title = $scope.film.title;
+      var title = mov.Title;
       var location = '';
       var notes = '';
       var startDate = new Date();
