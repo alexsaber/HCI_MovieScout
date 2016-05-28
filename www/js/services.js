@@ -44,7 +44,10 @@ angular.module('app.services', [])
         Year: film.year,
         Plot: film.simplePlot,
         Poster: film.urlPoster,
-        Actors: 'NA'
+        Actors: 'NA',
+        trailer: {
+          videoURL: film.trailer.videoURL
+        }
       }
 
       this.film = convertedFilm;
@@ -85,21 +88,21 @@ angular.module('app.services', [])
    searchFilms: function(title, year, type) {
      return $http.get('http://www.omdbapi.com/?s=' + title + '&y=' + year + '&type=' + type)
        .then(function (response) {
-         console.log('Get Post', response);
+         console.log('Get: ', response);
          return response.data;
        });
    },
    searchIMDB : function(imdbID) {
      return $http.get('http://www.omdbapi.com/?i=' + imdbID)
        .then(function (response) {
-         console.log('Get Post', response);
+         console.log('Get: ', response);
          return response.data;
        });
    },
    getInCinema : function() {
-     return $http.get('http://www.myapifilms.com/imdb/inTheaters?token=dfd6b103-d4cc-440c-be6b-e66309d5d67e&format=json&language=en-us')
+     return $http.get('http://www.myapifilms.com/imdb/inTheaters?token=dfd6b103-d4cc-440c-be6b-e66309d5d67e&format=json&language=en-us&trailers=1')
        .then(function (response) {
-         console.log('Get Post', response);
+         console.log('Get: ', response);
          return response.data;
        });
    }

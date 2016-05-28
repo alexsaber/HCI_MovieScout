@@ -1,7 +1,5 @@
 angular.module('app.controllers', [])
   
-
-
 .controller('homeCtrl', function($scope, $ionicLoading, $state, $ionicPopup, HttpService, filmData) {
  
   $ionicLoading.show({
@@ -40,7 +38,7 @@ angular.module('app.controllers', [])
     $scope.filmsInCinemas = inCinemaFims;
   });
   
-  
+
   $scope.addToList = function(inCinemaFims){
     //console.log('film is asdasdad' + film);
     console.log("in addToList homeCTRL");
@@ -169,9 +167,48 @@ angular.module('app.controllers', [])
   
   
   $scope.goToMovieDescr = function (film) {
-      console.log('film is ' + film);
+    
+    
+      console.log('goToMovieDescr for film: ' + film);
+      var videoURL = film.trailer.videoURL;
+      console.log('videoURL is:' + videoURL);
+      if(typeof videoURL !== 'undefined'){
+          console.log('videoURL is:' + videoURL);
+          var videoURLFiltered = videoURL.replace("www", "m").replace("comVIDEO", "com/video");
+          console.log('videoURLFiltered is:' + videoURLFiltered);
+          film.trailer.videoURL = videoURLFiltered;
+        }else
+          console.log('videoURL was NOT found');
+      
+      
       filmData.setFilm(film);
+      
       $state.go('menu.moviedescription');
+    
+    /*
+      $ionicLoading.show({
+          template: 'Loading...'
+      });
+      
+      console.log('goToMovieDescr for film: ' + film);
+      
+      HttpService.getTrailer_MyAPIFilms(film.idIMDB).then(function(searchRspns) {  
+        var videoURL = searchRspns.data.movies[0].trailer.videoURL;
+        console.log('videoURL is:' + videoURL);
+        if(typeof videoURL !== 'undefined'){
+          console.log('videoURL is:' + videoURL);
+          
+          var videoURLFiltered = videoURL.replace("www", "m").replace("comVIDEO", "com/video");
+          console.log('videoURLFiltered is:' + videoURLFiltered);
+          film.videoURL = videoURLFiltered;
+        }else
+          console.log('videoURL NOT found');
+          
+        filmData.setFilm(film);
+        $ionicLoading.hide();
+        $state.go('menu.moviedescription');
+      });
+      */
   };
 })
    
@@ -179,6 +216,13 @@ angular.module('app.controllers', [])
 .controller('moviedescriptionCtrl', function($scope, filmData) {
   console.log('entered moviedescriptionCtrl ');
   $scope.film = filmData.getFilm();
+  
+  
+  $scope.openTrailer = function(link){
+  // Open in external browser
+   console.log('entered openTrailer ');
+  window.open(link, '_blank', 'location=no');
+  };
 
   $scope.addToCalendar = function () {
 
