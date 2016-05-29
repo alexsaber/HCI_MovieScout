@@ -82,18 +82,34 @@ angular.module('app.controllers', [])
               var IMDB = inCinemaFims.idIMDB;
               var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
               
-              //Parsing-mania
-              var newJSON = JSON.stringify(jsonobj);
-              localStorage.setItem("speichern", true);
-              var oldwanted = JSON.parse(localStorage["wanted"]) || [];
+              var checkforduplicate = JSON.parse(localStorage["wanted"]) || [];
+   
+              len = parseInt(localStorage.getItem("wantedcount"));
+             
+              for(i = 0; i < len; i++)
+              {
+                if(JSON.parse(checkforduplicate[i]).imdbID == IMDB)
+                {
+                  var duplicate = true;
+                }
+              }
+              
+              if(duplicate != true)
+              {
+                //Parsing-mania
+                var newJSON = JSON.stringify(jsonobj);
+                localStorage.setItem("speichern", true);
+                var oldwanted = JSON.parse(localStorage["wanted"]) || [];
 
-              var newwanted = newJSON;
+                var newwanted = newJSON;
 
-              oldwanted.push(newwanted); //Add to Array
-              localStorage["wanted"] = JSON.stringify(oldwanted); //Save Array in a localStorage
-            
-              localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
-              console.log(localStorage.getItem("wantedcount"));
+                oldwanted.push(newwanted); //Add to Array
+                localStorage["wanted"] = JSON.stringify(oldwanted); //Save Array in a localStorage
+              
+                localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
+                console.log(localStorage.getItem("wantedcount"));
+              }
+              
          
          }
           
@@ -108,16 +124,33 @@ angular.module('app.controllers', [])
               var Plot = inCinemaFims.simplePlot;
               var IMDB = inCinemaFims.idIMDB;
               var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
-              var newJSON = JSON.stringify(jsonobj);
-              var oldwatched = JSON.parse(localStorage["watched"]) || [];
-              var newwatched = newJSON;
-            
-              oldwatched.push(newwatched); //Add to Array
-              localStorage["watched"] = JSON.stringify(oldwatched); //Save Array in a localStorage
-            
-              localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount"))+1);
-            
-              console.log("saving watched");
+              
+              var checkforduplicate = JSON.parse(localStorage["watched"]) || [];
+   
+              len = parseInt(localStorage.getItem("watchedcount"));
+             
+              for(i = 0; i < len; i++)
+              {
+                if(JSON.parse(checkforduplicate[i]).imdbID == IMDB)
+                {
+                  var duplicate = true;
+                }
+              }
+              
+              if(duplicate != true)
+              {
+              
+                  var newJSON = JSON.stringify(jsonobj);
+                  var oldwatched = JSON.parse(localStorage["watched"]) || [];
+                  var newwatched = newJSON;
+                
+                  oldwatched.push(newwatched); //Add to Array
+                  localStorage["watched"] = JSON.stringify(oldwatched); //Save Array in a localStorage
+                
+                  localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount"))+1);
+                
+                  console.log("saving watched");
+              }
          }
         
         
@@ -133,18 +166,34 @@ angular.module('app.controllers', [])
               var Year = inCinemaFims.year;
               var Plot = inCinemaFims.simplePlot;
               var IMDB = inCinemaFims.idIMDB;
-              var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
-              var newJSON = JSON.stringify(jsonobj);
-              var oldowned = JSON.parse(localStorage["owned"]) || [];
+              
+              var checkforduplicate = JSON.parse(localStorage["owned"]) || [];
+   
+              len = parseInt(localStorage.getItem("ownedcount"));
+             
+              for(i = 0; i < len; i++)
+              {
+                if(JSON.parse(checkforduplicate[i]).imdbID == IMDB)
+                {
+                  var duplicate = true;
+                }
+              }
+              
+              if(duplicate != true)
+              {
+              
+                  var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
+                  var newJSON = JSON.stringify(jsonobj);
+                  var oldowned = JSON.parse(localStorage["owned"]) || [];
+                
+                  var newowned = newJSON;
             
-              var newowned = newJSON;
-        
-              oldowned.push(newowned);
-              localStorage["owned"] = JSON.stringify(oldowned);
-            
-              localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
-              console.log("LOCALSTORAGE" + parseInt(localStorage.getItem("ownedcount")))
-          
+                  oldowned.push(newowned);
+                  localStorage["owned"] = JSON.stringify(oldowned);
+                
+                  localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
+                  console.log("LOCALSTORAGE" + parseInt(localStorage.getItem("ownedcount")))
+              }
          }
         
         localStorage.setItem("checkwanted", false);
@@ -297,14 +346,30 @@ angular.module('app.controllers', [])
         if(localStorage.getItem("checkwanted") == "true")
         {
           localStorage.setItem("speichern", true);
-          var oldwanted = JSON.parse(localStorage["wanted"]) || [];
-          var newwanted = JSON.stringify(film);
-    
-          oldwanted.push(newwanted);
-          localStorage["wanted"] = JSON.stringify(oldwanted);
-         
-          localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
           
+          var oldwanted = JSON.parse(localStorage["wanted"]) || [];
+          
+          var checkforduplicate = JSON.parse(localStorage["wanted"]) || [];
+   
+              len = parseInt(localStorage.getItem("wantedcount"));
+             
+              for(i = 0; i < len; i++)
+              {
+                if(JSON.parse(checkforduplicate[i]).imdbID == film.imdbID)
+                {
+                  var duplicate = true;
+                }
+              }
+              
+              if(duplicate != true)
+              {
+                  var newwanted = JSON.stringify(film);
+            
+                  oldwanted.push(newwanted);
+                  localStorage["wanted"] = JSON.stringify(oldwanted);
+                
+                  localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
+              }
         }
           
          if(localStorage.getItem("checkwatched") == "true")
@@ -312,13 +377,28 @@ angular.module('app.controllers', [])
           localStorage.setItem("speichern", true);
           
           var oldwatched = JSON.parse(localStorage["watched"]) || [];
+          
+           var checkforduplicate = JSON.parse(localStorage["watched"]) || [];
+   
+              len = parseInt(localStorage.getItem("watchedount"));
+             
+              for(i = 0; i < len; i++)
+              {
+                if(JSON.parse(checkforduplicate[i]).imdbID == film.imdbID)
+                {
+                  var duplicate = true;
+                }
+              }
+              
+              if(duplicate != true)
+              {
           var newwatched = JSON.stringify(film);
          
           oldwatched.push(newwatched);
           localStorage["watched"] = JSON.stringify(oldwatched);
          
           localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount"))+1);
-         
+              }
         }
         
         
@@ -328,12 +408,28 @@ angular.module('app.controllers', [])
           localStorage.setItem("speichern", true);
           
           var oldowned = JSON.parse(localStorage["owned"]) || [];
-          var newowned = JSON.stringify(film);
-         
-          oldowned.push(newowned);
-          localStorage["owned"] = JSON.stringify(oldowned);
-         
-          localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
+          
+           var checkforduplicate = JSON.parse(localStorage["owned"]) || [];
+   
+              len = parseInt(localStorage.getItem("ownedcount"));
+             
+              for(i = 0; i < len; i++)
+              {
+                if(JSON.parse(checkforduplicate[i]).imdbID == film.imdbID)
+                {
+                  var duplicate = true;
+                }
+              }
+              
+              if(duplicate != true)
+              {
+                var newowned = JSON.stringify(film);
+              
+                oldowned.push(newowned);
+                localStorage["owned"] = JSON.stringify(oldowned);
+              
+                localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
+              }
         }
         
         localStorage.setItem("checkwanted", false);
@@ -404,7 +500,7 @@ angular.module('app.controllers', [])
             }
             else
             {
-              localStorage.setItem("checkwatched", false);
+              localStorage.setItem("checkwanted", false);
             }
        }
        if(id == 2)
