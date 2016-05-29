@@ -39,12 +39,22 @@ angular.module('app.services', [])
      
     if(typeof film.Title === 'undefined'){
       console.log('film.Title is undefined');
+      
+      var length = film.actors.length;
+      var actors_str = "";
+      var maxNumOfActors = 6;
+      for(var i = 0; i < length && i < maxNumOfActors; i++){
+        actors_str += film.actors[i].actorName;
+        if (i+1 != length && i+1 != maxNumOfActors) 
+          actors_str += ", ";
+      }
+      console.log("actors_str: " + actors_str);
       var convertedFilm = {
         Title: film.title,
         Year: film.year,
         Plot: film.simplePlot,
         Poster: film.urlPoster,
-        Actors: 'NA',
+        Actors: actors_str,
         trailer: {
           videoURL: film.trailer.videoURL
         }
@@ -100,7 +110,7 @@ angular.module('app.services', [])
        });
    },
    getInCinema : function() {
-     return $http.get('http://www.myapifilms.com/imdb/inTheaters?token=dfd6b103-d4cc-440c-be6b-e66309d5d67e&format=json&language=en-us&trailers=1')
+     return $http.get('http://www.myapifilms.com/imdb/inTheaters?token=dfd6b103-d4cc-440c-be6b-e66309d5d67e&format=json&language=en-us&trailers=1&actors=1')
        .then(function (response) {
          console.log('Get: ', response);
          return response.data;
