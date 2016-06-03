@@ -26,8 +26,13 @@ angular.module('app.controllers', [])
 
 .controller('homeCtrl', function($scope, $ionicLoading, $state, $ionicPopup, HttpService, filmData) {
  
-  $ionicLoading.show({
-      template: '<img src="../img/logo.png" /><br>Loading...'
+    $ionicLoading.show({
+        template: '<img ng-src="img/logo_big.png"><br>Loading...',
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 1500,
+        showDelay: 0
   });
   
   $scope.addToCalendar = function (movie) {
@@ -688,7 +693,12 @@ angular.module('app.controllers', [])
       {
 
           $ionicLoading.show({
-              template: '<img src="../img/logo.png" /><br>Loading...'
+              template: '<img ng-src="img/logo_big.png"><br>Loading...',
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 1500,
+              showDelay: 0
         });
 
         var searchTitle = document.getElementById("searchTitle").value;
