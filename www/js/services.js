@@ -54,7 +54,12 @@ angular.module('app.services', [])
         Year: film.year,
         Plot: film.simplePlot,
         Poster: film.urlPoster,
+<<<<<<< HEAD
         Actors: actors_str,
+=======
+        Rating: film.rating,
+        Actors: film.actors,
+>>>>>>> 4b29b476108ada7527f366eaa27341a8f27d8e5b
         trailer: {
           videoURL: film.trailer.videoURL
         }
