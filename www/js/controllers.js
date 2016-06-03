@@ -32,10 +32,6 @@ angular.module('app.controllers', [])
   
   $scope.addToCalendar = function (movie) {
 
-      $ionicLoading.show({
-          template: 'Loading...'
-      });
-
       var title = movie.title;
       var location = '';
       var notes = '';
@@ -52,7 +48,6 @@ angular.module('app.controllers', [])
       startDate.setHours(startDate.getHours() + 24);
       endDate.setHours(endDate.getHours() + 26);
       window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
-      $ionicLoading.hide();
   };
   
   HttpService.getInCinema().then(function(searchFilmsRspns) {  
@@ -692,8 +687,8 @@ angular.module('app.controllers', [])
       if (document.getElementById("searchTitle").value != "")
       {
 
-        $ionicLoading.show({
-          template: 'Loading...'
+          $ionicLoading.show({
+              template: '<img src="../img/logo.png" /><br>Loading...'
         });
 
         var searchTitle = document.getElementById("searchTitle").value;
