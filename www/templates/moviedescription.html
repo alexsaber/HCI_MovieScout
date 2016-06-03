@@ -3,26 +3,35 @@
         <div class="list card">
             <div class="item item-divider">{{ film.Title }} ({{ film.Year }})</div>
             <div class="item item-body">
+                
                 <div ng-show="film.Poster">
                     <img src="{{film.Poster}}" width="50%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
                 </div>
+                
                 <div ng-show="film.trailer.videoURL">
-                    
                     <button class="button button-small button-block button-outline icon-right ion-ios-videocam button-positive"
                     ng-click="openTrailer(film.trailer.videoURL)">
                         Watch trailer
                     </button>
-
                 </div>
-                <h2 id="moviedescription-heading1" style="color:#000000;">Plot</h2>
+                
                 <div ng-show="film.Plot" id="moviedescription-markdown3" style="color:#000000;">
+                    <h2 id="moviedescription-heading1" style="color:#000000;">Plot</h2>
                     <p>{{ film.Plot }}</p>
-                </div>         
+                </div>        
+                
+                
+                <div ng-show="film.Rating" id="moviedescription-markdown5" style="color:#000000;">
+                    <h2 id="moviedescription-heading2" style="color:#000000;">Rating</h2>
+                    <p>{{film.Rating}}</p>
+                </div> 
 
-                <h2 id="moviedescription-heading2" style="color:#000000;">Actors</h2>
+                
                 <div ng-show="film.Actors" id="moviedescription-markdown5" style="color:#000000;">
+                    <h2 id="moviedescription-heading2" style="color:#000000;">Actors</h2>
                     <p>{{film.Actors}}</p>
                 </div>
+                
             </div>
         </div>
     </ion-content>
