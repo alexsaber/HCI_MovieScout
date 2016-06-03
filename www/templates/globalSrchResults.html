@@ -2,7 +2,14 @@
     <ion-content padding="true" class="has-header"> 
        
         <ion-list>
-            
+            <div ng-show="!foundFilms.length" class="list card">
+                <div class="item item-divider">0 Hits</div>
+                <div class="item item-body">
+                    <div id="wanted-markdown1" style="color:#000000;">
+                        <p>Sorry! No entries found!</p>
+                    </div>
+                </div>
+            </div>   
         <div ng-repeat="film in foundFilms" class="list card">
             <div class="item item-divider">{{ film.Title }} ({{ film.Year }})</div>
             <div class="item item-body">
@@ -13,7 +20,7 @@
                     <p>{{ film.Plot }} </p>
                 </div>
                 <div class="button-bar">
-                   <a ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive  button-block icon ion-android-add"></a>
+                    <a ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive ion-ios-list-outline  button-block icon ion-android-add"></a>
                     <a ng-click="addToCalendar( {{film}} )" id="calendar-button1" class="button button-positive  button-block icon ion-android-calendar"></a>
                        <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button button-positive  button-block icon ion-information-circled"></a>
                 </div>

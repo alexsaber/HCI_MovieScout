@@ -1,16 +1,41 @@
 angular.module('app.controllers', [])
-  
+
+.controller('MenuCtrl', function ($scope) {
+    $scope.barcode = function () {
+        cordova.plugins.barcodeScanner.scan
+          (
+             function (result) {
+                 alert("We got a barcode\n" +
+                       "Result: " + result.text + "\n" +
+                       "Format: " + result.format + "\n" +
+                       "Cancelled: " + result.cancelled);
+             },
+             function (error) {
+                 alert("Scanning failed: " + error);
+             },
+             {
+                 "preferFrontCamera": false, // iOS and Android
+                 "showFlipCameraButton": true, // iOS and Android
+                 "prompt": "Place a barcode inside the scan area", // supported on Android only
+                 "formats": "QR_CODE,PDF_417,EAN-8, UPC-E, UPC-E, UPC-E, UPC-E, EAN-13, UPC-A, RSS_EXPANDED", // default: all but PDF_417 and RSS_EXPANDED
+                 "orientation": "landscape" // Android only (portrait|landscape), default unset so it rotates with the device
+             }
+          )
+    }
+})
+
 .controller('homeCtrl', function($scope, $ionicLoading, $state, $ionicPopup, HttpService, filmData) {
  
-  $ionicLoading.show({
-    template: 'Loading...'
+    $ionicLoading.show({
+        template: '<img ng-src="img/logo_big.png"><br>Loading...',
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 1500,
+        showDelay: 0
   });
   
   $scope.addToCalendar = function (movie) {
-
-      $ionicLoading.show({
-          template: 'Loading...'
-      });
 
       var title = movie.title;
       var location = '';
@@ -28,7 +53,6 @@ angular.module('app.controllers', [])
       startDate.setHours(startDate.getHours() + 24);
       endDate.setHours(endDate.getHours() + 26);
       window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
-      $ionicLoading.hide();
   };
   
   HttpService.getInCinema().then(function(searchFilmsRspns) {  
@@ -39,169 +63,203 @@ angular.module('app.controllers', [])
   });
   
 
-  $scope.addToList = function(inCinemaFims){
-    
-    console.log("in addToList homeCTRL");
-    $scope.data11 = {wanted : false}
-    $scope.data22= {watched : false};
-    $scope.data33 = {owned : false};
-    
-    localStorage.setItem("checkwanted", false);
-    localStorage.setItem("checkwatched", false);
-    localStorage.setItem("checkowned", false);
-    localStorage.setItem("popup", true);
-    
-    filmData.setFilm(inCinemaFims);
-    //Popup - Add to which lists?
-    var confirmPopup1 = $ionicPopup.confirm({
-      title: 'Add to',
-      template: '<div ng-controller="checkedCtrl"><ion-checkbox ng-model="data22.watched" ng-click="checked1(2)">Watched</ion-checkbox>'+
-      '<ion-checkbox ng-model="data11.wanted" ng-click="checked1(1)">Wanted</ion-checkbox>'+
-      '<ion-checkbox ng-model="data33.owned" ng-click="checked1(3)">Owned</ion-checkbox></div>',   
-      okText: 'Add'
-    });
-    
-    localStorage.setItem("popup", false);
-    
-    
-    confirmPopup1.then(function(res)
-    {
-      if(res)
-      {
-        if(localStorage.getItem("checkwanted") == "true") //Movie will be added to Wanted
-        {
-            console.log("saving wanted");
-              //As 2 different APIs are used, a custom JSON object is created so that the Objects
-              //of both APIs have the same attributes with the same variable names.
-              var Title = inCinemaFims.title;
-              var Poster = inCinemaFims.urlPoster;
-              var Year = inCinemaFims.year;
-              var Plot = inCinemaFims.simplePlot;
-              console.log(Title);
-              console.log(Poster);
-              var IMDB = inCinemaFims.idIMDB;
-              var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
-              
-              var checkforduplicate = JSON.parse(localStorage["wanted"]) || [];
-   
-              len = parseInt(localStorage.getItem("wantedcount"));
-             
-              for(i = 0; i < len; i++)
-              {
-                if(JSON.parse(checkforduplicate[i]).imdbID == IMDB)
-                {
-                  var duplicate = true;
-                }
-              }
-              
-              if(duplicate != true)
-              {
-                //Parsing-mania
-                var newJSON = JSON.stringify(jsonobj);
-                localStorage.setItem("speichern", true);
-                var oldwanted = JSON.parse(localStorage["wanted"]) || [];
+  $scope.addToList = function (inCinemaFims) {
 
-                var newwanted = newJSON;
+      var isInWanted = false;
+      var len = parseInt(localStorage.getItem("wantedcount"));
+      for (i = 0; i < len; i++) {
+          var holder = JSON.parse(localStorage["wanted"])[i];
+          var holder2 = JSON.parse(holder);
+          if (inCinemaFims.idIMDB == holder2.imdbID) {
+              isInWanted = true;
+              break;
+          }
+      }
 
-                oldwanted.push(newwanted); //Add to Array
-                localStorage["wanted"] = JSON.stringify(oldwanted); //Save Array in a localStorage
-              
-                localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
-                console.log(localStorage.getItem("wantedcount"));
-              }
-              
-         
-         }
-          
-         if(localStorage.getItem("checkwatched") == "true") //Movie will be saved to Wanted list
-         {   
-              localStorage.setItem("speichern", true);
-              //As 2 different APIs are used, a custom JSON object is created so that the Objects
-              //of both APIs have the same attributes with the same variable names.
-              var Title = inCinemaFims.title;
-              var Poster = inCinemaFims.urlPoster;
-              var Year = inCinemaFims.year;
-              var Plot = inCinemaFims.simplePlot;
-              var IMDB = inCinemaFims.idIMDB;
-              var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
-              
-              var checkforduplicate = JSON.parse(localStorage["watched"]) || [];
-   
-              len = parseInt(localStorage.getItem("watchedcount"));
-             
-              for(i = 0; i < len; i++)
+      var isInwatched = false;
+      len = parseInt(localStorage.getItem("watchedcount"));
+      for (i = 0; i < len; i++) {
+          var holder = JSON.parse(localStorage["watched"])[i];
+          var holder2 = JSON.parse(holder);
+          if (inCinemaFims.idIMDB == holder2.imdbID) {
+              isInwatched = true;
+              break;
+          }
+      }
+
+      var isInOwned = false;
+      len = parseInt(localStorage.getItem("ownedcount"));
+      for (i = 0; i < len; i++) {
+          var holder = JSON.parse(localStorage["owned"])[i];
+          var holder2 = JSON.parse(holder);
+
+          if (inCinemaFims.idIMDB == holder2.imdbID) {
+              isInOwned = true;
+              break;
+          }
+      }
+
+      $scope.data11 = { wanted: isInWanted };
+      $scope.data22 = { watched: isInwatched };
+      $scope.data33 = { owned: isInOwned };
+
+      localStorage.setItem("checkwanted", isInWanted);
+      localStorage.setItem("checkwatched", isInwatched);
+      localStorage.setItem("checkowned", isInOwned);
+      localStorage.setItem("popup", true);
+
+      filmData.setFilm(inCinemaFims);
+      //Popup - Add to which lists?
+      var confirmPopup1 = $ionicPopup.confirm({
+          title: 'Add to',
+          template: '<div ng-controller="checkedCtrl"><ion-checkbox  ng-checked="' + isInwatched + '" ng-model="data22.watched" ng-click="checked1(2)">Watched</ion-checkbox>' +
+          '<ion-checkbox ng-checked="' + isInWanted + '" ng-model="data11.wanted" ng-click="checked1(1)">Wanted</ion-checkbox>' +
+          '<ion-checkbox ng-checked="' + isInOwned + '" ng-model="data33.owned" ng-click="checked1(3)">Owned</ion-checkbox></div>',
+          okText: 'Add'
+      });
+
+      localStorage.setItem("popup", false);
+
+
+      confirmPopup1.then(function (res) {
+          if (res) {
+              if (localStorage.getItem("checkwanted") == "true" && !isInWanted) //Movie will be added to Wanted
               {
-                if(JSON.parse(checkforduplicate[i]).imdbID == IMDB)
-                {
-                  var duplicate = true;
-                }
+                  console.log("saving wanted");
+                  //As 2 different APIs are used, a custom JSON object is created so that the Objects
+                  //of both APIs have the same attributes with the same variable names.
+                  var Title = inCinemaFims.title;
+                  var Poster = inCinemaFims.urlPoster;
+                  var Year = inCinemaFims.year;
+                  var Plot = inCinemaFims.simplePlot;
+                  console.log(Title);
+                  console.log(Poster);
+                  var IMDB = inCinemaFims.idIMDB;
+                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB };
+
+                  //Parsing-mania
+                  var newJSON = JSON.stringify(jsonobj);
+                  localStorage.setItem("speichern", true);
+                  var oldwanted = JSON.parse(localStorage["wanted"]) || [];
+
+                  var newwanted = newJSON;
+
+                  oldwanted.push(newwanted); //Add to Array
+                  localStorage["wanted"] = JSON.stringify(oldwanted); //Save Array in a localStorage
+
+                  localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount")) + 1);
+                  console.log(localStorage.getItem("wantedcount"));
+
               }
-              
-              if(duplicate != true)
+              else if (isInWanted && localStorage.getItem("checkwanted") == "false") {
+                  var len = parseInt(localStorage.getItem("wantedcount"));
+
+                  var old = JSON.parse(localStorage["wanted"]) || [];
+                  for (i = 0; i < len; i++) {
+                      //parsingmania
+                      var holder = JSON.parse(localStorage["wanted"])[i];
+                      var holder2 = JSON.parse(holder);
+                      if (inCinemaFims.idIMDB == holder2.imdbID) {
+                          old.splice(i, 1); //Delete movie from array
+                      }
+
+                  }
+                  localStorage["wanted"] = JSON.stringify(old);
+                  localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount")) - 1);
+                  //$scope.reload();
+              }
+
+              if (localStorage.getItem("checkwatched") == "true" && !isInwatched) //Movie will be saved to Wanted list
               {
-              
+                  //As 2 different APIs are used, a custom JSON object is created so that the Objects
+                  //of both APIs have the same attributes with the same variable names.
+                  var Title = inCinemaFims.title;
+                  var Poster = inCinemaFims.urlPoster;
+                  var Year = inCinemaFims.year;
+                  var Plot = inCinemaFims.simplePlot;
+                  var IMDB = inCinemaFims.idIMDB;
+                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB };
                   var newJSON = JSON.stringify(jsonobj);
                   var oldwatched = JSON.parse(localStorage["watched"]) || [];
                   var newwatched = newJSON;
-                
+
                   oldwatched.push(newwatched); //Add to Array
                   localStorage["watched"] = JSON.stringify(oldwatched); //Save Array in a localStorage
-                
-                  localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount"))+1);
-                
+
+                  localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount")) + 1);
+
                   console.log("saving watched");
               }
-         }
-        
-        
-        
-         if(localStorage.getItem("checkowned") == "true")
-         {
-              console.log("saving owned");
-              localStorage.setItem("speichern", true);
-              //As 2 different APIs are used, a custom JSON object is created so that the Objects
-              //of both APIs have the same attributes with the same variable names.
-              var Title = inCinemaFims.title;
-              var Poster = inCinemaFims.urlPoster;
-              var Year = inCinemaFims.year;
-              var Plot = inCinemaFims.simplePlot;
-              var IMDB = inCinemaFims.idIMDB;
-              
-              var checkforduplicate = JSON.parse(localStorage["owned"]) || [];
-   
-              len = parseInt(localStorage.getItem("ownedcount"));
-             
-              for(i = 0; i < len; i++)
-              {
-                if(JSON.parse(checkforduplicate[i]).imdbID == IMDB)
-                {
-                  var duplicate = true;
-                }
+              else if (isInwatched && localStorage.getItem("checkwatched") == "false") {
+                  var len = parseInt(localStorage.getItem("watchedcount"));
+
+                  var old = JSON.parse(localStorage["watched"]) || [];
+                  for (i = 0; i < len; i++) {
+                      var holder = JSON.parse(localStorage["watched"])[i];
+                      var holder2 = JSON.parse(holder);
+
+                      if (inCinemaFims.idIMDB == holder2.imdbID) {
+                          old.splice(i, 1);
+                      }
+
+                  }
+
+                  localStorage["watched"] = JSON.stringify(old);
+                  localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount")) - 1);
+
+                  //$scope.reload();
               }
-              
-              if(duplicate != true)
-              {
-              
-                  var jsonobj = {'Title' : Title, 'Poster' : Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB};
+
+
+
+              if (localStorage.getItem("checkowned") == "true" && !isInOwned) {
+                  console.log("saving owned");
+                  localStorage.setItem("speichern", true);
+                  //As 2 different APIs are used, a custom JSON object is created so that the Objects
+                  //of both APIs have the same attributes with the same variable names.
+                  var Title = inCinemaFims.title;
+                  var Poster = inCinemaFims.urlPoster;
+                  var Year = inCinemaFims.year;
+                  var Plot = inCinemaFims.simplePlot;
+                  var IMDB = inCinemaFims.idIMDB;
+                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB };
                   var newJSON = JSON.stringify(jsonobj);
                   var oldowned = JSON.parse(localStorage["owned"]) || [];
-                
+
                   var newowned = newJSON;
-            
+
                   oldowned.push(newowned);
                   localStorage["owned"] = JSON.stringify(oldowned);
-                
-                  localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
-                  console.log("LOCALSTORAGE" + parseInt(localStorage.getItem("ownedcount")))
+
+                  localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount")) + 1);
+                  //$scope.reload();
+
               }
-         }
-        
-        localStorage.setItem("checkwanted", false);
-        localStorage.setItem("checkwatched", false);
-        localStorage.setItem("checkowned", false);
-      }
-    })
-}
+              else if (isInOwned && localStorage.getItem("checkowned") == "false") {
+                  var len = parseInt(localStorage.getItem("ownedcount"));
+
+                  var old = JSON.parse(localStorage["owned"]) || [];
+                  for (i = 0; i < len; i++) {
+                      //parsingmania
+                      var holder = JSON.parse(localStorage["owned"])[i];
+                      var holder2 = JSON.parse(holder);
+                      if (inCinemaFims.idIMDB == holder2.imdbID) {
+                          old.splice(i, 1);
+                      }
+
+                  }
+
+                  localStorage["owned"] = JSON.stringify(old);
+                  localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount")) - 1);
+                  //$scope.reload();
+              }
+
+              localStorage.setItem("checkwanted", false);
+              localStorage.setItem("checkwatched", false);
+              localStorage.setItem("checkowned", false);
+          }
+      })
+  }
   
    
   
@@ -289,16 +347,11 @@ angular.module('app.controllers', [])
 
 
 .controller('globalSrchResultsCtrl', function($scope, $state, $ionicLoading, $ionicPopup, foundFilmsData, filmData) {
-  console.log('entered globalSrchResultsCtrl ');
-   //console.log('foundFilmsData.getFoundFilms() ' + foundFilmsData.getFoundFilms());
+  
   $scope.foundFilms = foundFilmsData.getFoundFilms();
   $ionicLoading.hide();
 
   $scope.addToCalendar = function (movie) {
-
-      $ionicLoading.show({
-          template: 'Loading...'
-      });
 
       var title = movie.Title;
       var location = '';
@@ -316,128 +369,175 @@ angular.module('app.controllers', [])
       startDate.setHours(startDate.getHours() + 24);
       endDate.setHours(endDate.getHours() + 26);
       window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
-      $ionicLoading.hide();
   };
   
-  $scope.addToWanted = function(film){  //Saving movie to a List 
-    //console.log('film is asdasdad' + film);
-    $scope.data1 = {wanted : false}
-    $scope.data2= {watched : false};
-    $scope.data3 = {owned : false};
-    
-    localStorage.setItem("checkwanted", false);
-    localStorage.setItem("checkwatched", false);
-    localStorage.setItem("checkowned", false);
-    
-    filmData.setFilm(film);
-    
-    var confirmPopup = $ionicPopup.confirm({
-      title: 'Add to',
-      template: '<div ng-controller="globalSrchResultsCtrl"><ion-checkbox ng-model="data2.watched" ng-click="checked(2)">Watched</ion-checkbox>'+
-      '<ion-checkbox ng-model="data1.wanted" ng-click="checked(1)">Wanted</ion-checkbox>'+
-      '<ion-checkbox ng-model="data3.owned" ng-click="checked(3)">Owned</ion-checkbox></div>',   
-      okText: 'Add'
-    });
-    
-    confirmPopup.then(function(res)
-    {
-      if(res)
-      {
-        if(localStorage.getItem("checkwanted") == "true")
-        {
-          localStorage.setItem("speichern", true);
-          
-          var oldwanted = JSON.parse(localStorage["wanted"]) || [];
-          
-          var checkforduplicate = JSON.parse(localStorage["wanted"]) || [];
-   
-              len = parseInt(localStorage.getItem("wantedcount"));
-             
-              for(i = 0; i < len; i++)
-              {
-                if(JSON.parse(checkforduplicate[i]).imdbID == film.imdbID)
-                {
-                  var duplicate = true;
-                }
-              }
-              
-              if(duplicate != true)
-              {
+  $scope.addToWanted = function (film) {  //Saving movie to a List 
+      //console.log('film is asdasdad' + film);
+
+      var isInWanted = false;
+      var len = parseInt(localStorage.getItem("wantedcount"));
+      for (i = 0; i < len; i++) {
+          var holder = JSON.parse(localStorage["wanted"])[i];
+          var holder2 = JSON.parse(holder);
+          if (film.imdbID == holder2.imdbID) {
+              isInWanted = true;
+              break;
+          }
+      }
+
+      var isInwatched = false;
+      len = parseInt(localStorage.getItem("watchedcount"));
+      for (i = 0; i < len; i++) {
+          var holder = JSON.parse(localStorage["watched"])[i];
+          var holder2 = JSON.parse(holder);
+          if (film.imdbID == holder2.imdbID) {
+              isInwatched = true;
+              break;
+          }
+      }
+
+      var isInOwned = false;
+      len = parseInt(localStorage.getItem("ownedcount"));
+      for (i = 0; i < len; i++) {
+          var holder = JSON.parse(localStorage["owned"])[i];
+          var holder2 = JSON.parse(holder);
+          if (film.imdbID == holder2.imdbID) {
+              isInOwned = true;
+              break;
+          }
+      }
+
+
+      $scope.data1 = { wanted: isInWanted };
+      $scope.data2 = { watched: isInwatched };
+      $scope.data3 = { owned: isInOwned };
+
+      localStorage.setItem("checkwanted", isInWanted);
+      localStorage.setItem("checkwatched", isInwatched);
+      localStorage.setItem("checkowned", isInOwned);
+      localStorage.setItem("popup", true);
+
+
+      filmData.setFilm(film);
+
+      var confirmPopup = $ionicPopup.confirm({
+          title: 'Add to',
+          template: '<div ng-controller="checkedCtrl"><ion-checkbox  ng-checked="' + isInwatched + '" ng-model="data2.watched" ng-click="checked1(2)">Watched</ion-checkbox>' +
+          '<ion-checkbox ng-checked="' + isInWanted + '" ng-model="data1.wanted" ng-click="checked1(1)">Wanted</ion-checkbox>' +
+          '<ion-checkbox ng-checked="' + isInOwned + '" ng-model="data3.owned" ng-click="checked1(3)">Owned</ion-checkbox></div>',
+          okText: 'Add'
+      });
+
+      localStorage.setItem("popup", false);
+
+      confirmPopup.then(function (res) {
+          if (res) {
+              if (localStorage.getItem("checkwanted") == "true" && !isInWanted) {
+                  localStorage.setItem("speichern", true);
+                  var oldwanted = JSON.parse(localStorage["wanted"]) || [];
                   var newwanted = JSON.stringify(film);
-            
+
                   oldwanted.push(newwanted);
                   localStorage["wanted"] = JSON.stringify(oldwanted);
-                
-                  localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount"))+1);
+
+                  localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount")) + 1);
+
               }
-        }
-          
-         if(localStorage.getItem("checkwatched") == "true")
-        {   
-          localStorage.setItem("speichern", true);
-          
-          var oldwatched = JSON.parse(localStorage["watched"]) || [];
-          
-           var checkforduplicate = JSON.parse(localStorage["watched"]) || [];
-   
-              len = parseInt(localStorage.getItem("watchedount"));
-             
-              for(i = 0; i < len; i++)
-              {
-                if(JSON.parse(checkforduplicate[i]).imdbID == film.imdbID)
-                {
-                  var duplicate = true;
-                }
+              else {
+                  if (isInWanted && localStorage.getItem("checkwanted") == "false") {
+                      var len = parseInt(localStorage.getItem("wantedcount"));
+
+                      var old = JSON.parse(localStorage["wanted"]) || [];
+                      for (i = 0; i < len; i++) {
+                          //parsingmania
+                          var holder = JSON.parse(localStorage["wanted"])[i];
+                          var holder2 = JSON.parse(holder);
+                          if (film.imdbID == holder2.imdbID) {
+                              old.splice(i, 1); //Delete movie from array
+                          }
+
+                      }
+                      localStorage["wanted"] = JSON.stringify(old);
+                      localStorage.setItem("wantedcount", parseInt(localStorage.getItem("wantedcount")) - 1);
+
+                      //  if (listId==0)
+                      $scope.reload();
+                  }
               }
-              
-              if(duplicate != true)
-              {
-          var newwatched = JSON.stringify(film);
-         
-          oldwatched.push(newwatched);
-          localStorage["watched"] = JSON.stringify(oldwatched);
-         
-          localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount"))+1);
+
+              if (localStorage.getItem("checkwatched") == "true" && !isInwatched) {
+                  localStorage.setItem("speichern", true);
+
+                  var oldwatched = JSON.parse(localStorage["watched"]) || [];
+                  var newwatched = JSON.stringify(film);
+
+                  oldwatched.push(newwatched);
+                  localStorage["watched"] = JSON.stringify(oldwatched);
+
+                  localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount")) + 1);
+
               }
-        }
-        
-        
-        
-         if(localStorage.getItem("checkowned") == "true")
-        {
-          localStorage.setItem("speichern", true);
-          
-          var oldowned = JSON.parse(localStorage["owned"]) || [];
-          
-           var checkforduplicate = JSON.parse(localStorage["owned"]) || [];
-   
-              len = parseInt(localStorage.getItem("ownedcount"));
-             
-              for(i = 0; i < len; i++)
-              {
-                if(JSON.parse(checkforduplicate[i]).imdbID == film.imdbID)
-                {
-                  var duplicate = true;
-                }
+              else if (isInwatched && localStorage.getItem("checkwatched") == "false") {
+                  var len = parseInt(localStorage.getItem("watchedcount"));
+
+                  var old = JSON.parse(localStorage["watched"]) || [];
+                  for (i = 0; i < len; i++) {
+                      var holder = JSON.parse(localStorage["watched"])[i];
+                      var holder2 = JSON.parse(holder);
+
+                      if (film.imdbID == holder2.imdbID) {
+                          old.splice(i, 1);
+                      }
+
+                  }
+
+                  localStorage["watched"] = JSON.stringify(old);
+                  localStorage.setItem("watchedcount", parseInt(localStorage.getItem("watchedcount")) - 1);
+
+                  //  if (listId == 1)
+                  $scope.reload();
               }
-              
-              if(duplicate != true)
-              {
-                var newowned = JSON.stringify(film);
-              
-                oldowned.push(newowned);
-                localStorage["owned"] = JSON.stringify(oldowned);
-              
-                localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount"))+1);
+
+
+
+              if (localStorage.getItem("checkowned") == "true" && !isInOwned) {
+                  localStorage.setItem("speichern", true);
+
+                  var oldowned = JSON.parse(localStorage["owned"]) || [];
+                  var newowned = JSON.stringify(film);
+
+                  oldowned.push(newowned);
+                  localStorage["owned"] = JSON.stringify(oldowned);
+
+                  localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount")) + 1);
               }
-        }
-        
-        localStorage.setItem("checkwanted", false);
-        localStorage.setItem("checkwatched", false);
-        localStorage.setItem("checkowned", false);
-      }
-    })
- }
+              else if (isInOwned && localStorage.getItem("checkowned") == "false") {
+                  var len = parseInt(localStorage.getItem("ownedcount"));
+
+                  var old = JSON.parse(localStorage["owned"]) || [];
+                  for (i = 0; i < len; i++) {
+                      //parsingmania
+                      var holder = JSON.parse(localStorage["owned"])[i];
+                      var holder2 = JSON.parse(holder);
+                      if (film.imdbID == holder2.imdbID) {
+                          old.splice(i, 1);
+                      }
+
+                  }
+
+                  localStorage["owned"] = JSON.stringify(old);
+                  localStorage.setItem("ownedcount", parseInt(localStorage.getItem("ownedcount")) - 1);
+
+                  // if (listId == 2)
+                  $scope.reload();
+              }
+
+              localStorage.setItem("checkwanted", false);
+              localStorage.setItem("checkwatched", false);
+              localStorage.setItem("checkowned", false);
+          }
+      })
+  }
   
    $scope.checked = function(id)  //See if checkbos has been checked
     {
@@ -586,53 +686,62 @@ angular.module('app.controllers', [])
       
 .controller('globalSrchCtrl', function($scope, $q, $state, $ionicLoading, HttpService, filmData, foundFilmsData) {
   console.log("globalSrchCtrl");
-  
+  $scope.inputvalue = "";
   $scope.search = function() {
     
-    $ionicLoading.show({
-      template: 'Loading...'
-    });
+      if (document.getElementById("searchTitle").value != "")
+      {
 
-    var searchTitle = document.getElementById("searchTitle").value;
-    var searchYear = document.getElementById("searchYear").value;
-    var selectedType = document.getElementById("selectedType").value.toLowerCase();
-    if(selectedType == 'any')
-      selectedType = '';
-    console.log("searchTitle: " + searchTitle);
-    console.log("searchYear: " + searchYear);
-    console.log("selectedType: " + selectedType);
-    if(searchTitle != null){
-      HttpService.searchFilms(searchTitle, searchYear, selectedType).then(function(searchFilmsRspns) {  
-        $scope.films = searchFilmsRspns.Search;
-        console.log($scope.films);
-        var promises = [];
-        for (var i in $scope.films) {
-        if ($scope.films.hasOwnProperty(i)) {   
-            promises.push(HttpService.searchIMDB($scope.films[i].imdbID));
-         }
-        }
-         $q.all(promises).then(function(results){
-          var counter = 0;
-          results.forEach(function(data,status,headers,config){
-            $scope.films[counter].Plot = data.Plot;
-            $scope.films[counter].Actors = data.Actors;
-            $scope.films[counter].Poster = data.Poster;
-            counter++;
-          });
-          
-          //console.log('setting fondFilms: ' + $scope.films); 
-          foundFilmsData.setFoundFilms($scope.films);
-          $state.go('menu.globalSrchResults');
+          $ionicLoading.show({
+              template: '<img ng-src="img/logo_big.png"><br>Loading...',
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 1500,
+              showDelay: 0
         });
-       // console.log(' $scope.showFilms = $scope.films;'); 
+
+        var searchTitle = document.getElementById("searchTitle").value;
+        var searchYear = document.getElementById("searchYear").value;
+        var selectedType = document.getElementById("selectedType").value.toLowerCase();
+        if(selectedType == 'any')
+          selectedType = '';
+        console.log("searchTitle: " + searchTitle);
+        console.log("searchYear: " + searchYear);
+        console.log("selectedType: " + selectedType);
+        if(searchTitle != null){
+          HttpService.searchFilms(searchTitle, searchYear, selectedType).then(function(searchFilmsRspns) {  
+            $scope.films = searchFilmsRspns.Search;
+            console.log($scope.films);
+            var promises = [];
+            for (var i in $scope.films) {
+            if ($scope.films.hasOwnProperty(i)) {   
+                promises.push(HttpService.searchIMDB($scope.films[i].imdbID));
+             }
+            }
+             $q.all(promises).then(function(results){
+              var counter = 0;
+              results.forEach(function(data,status,headers,config){
+                $scope.films[counter].Plot = data.Plot;
+                $scope.films[counter].Actors = data.Actors;
+                $scope.films[counter].Poster = data.Poster;
+                counter++;
+              });
+          
+              //console.log('setting fondFilms: ' + $scope.films); 
+              foundFilmsData.setFoundFilms($scope.films);
+              $state.go('menu.globalSrchResults');
+            });
+           // console.log(' $scope.showFilms = $scope.films;'); 
         
-      });
-      //end of if
+          });
+          //end of if
     }
     
   }; 
   
-  
+
+  }
 })
  
  .controller('ownedCtrl', function($scope, $state, filmData) {
