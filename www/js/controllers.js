@@ -725,6 +725,7 @@ angular.module('app.controllers', [])
                 $scope.films[counter].Plot = data.Plot;
                 $scope.films[counter].Actors = data.Actors;
                 $scope.films[counter].Poster = data.Poster;
+                $scope.films[counter].Rating = data.imdbRating;
                 counter++;
               });
           
