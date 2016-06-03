@@ -27,7 +27,7 @@ angular.module('app.controllers', [])
 .controller('homeCtrl', function($scope, $ionicLoading, $state, $ionicPopup, HttpService, filmData) {
  
   $ionicLoading.show({
-    template: 'Loading...'
+      template: '<img src="../img/logo.png" /><br>Loading...'
   });
   
   $scope.addToCalendar = function (movie) {
@@ -347,17 +347,11 @@ angular.module('app.controllers', [])
 
 
 .controller('globalSrchResultsCtrl', function($scope, $state, $ionicLoading, $ionicPopup, foundFilmsData, filmData) {
-    console.log('entered globalSrchResultsCtrl ');
- 
-   //console.log('foundFilmsData.getFoundFilms() ' + foundFilmsData.getFoundFilms());
+  
   $scope.foundFilms = foundFilmsData.getFoundFilms();
   $ionicLoading.hide();
 
   $scope.addToCalendar = function (movie) {
-
-      $ionicLoading.show({
-          template: 'Loading...'
-      });
 
       var title = movie.Title;
       var location = '';
@@ -375,7 +369,6 @@ angular.module('app.controllers', [])
       startDate.setHours(startDate.getHours() + 24);
       endDate.setHours(endDate.getHours() + 26);
       window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
-      $ionicLoading.hide();
   };
   
   $scope.addToWanted = function (film) {  //Saving movie to a List 

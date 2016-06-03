@@ -2,7 +2,14 @@
     <ion-content padding="true" class="has-header"> 
        
         <ion-list>
-            
+            <div ng-show="!foundFilms.length" class="list card">
+                <div class="item item-divider">0 Treffer</div>
+                <div class="item item-body">
+                    <div id="wanted-markdown1" style="color:#000000;">
+                        <p>Leider wurde(n) kein(e) Film(e) gefunden</p>
+                    </div>
+                </div>
+            </div>   
         <div ng-repeat="film in foundFilms" class="list card">
             <div class="item item-divider">{{ film.Title }} ({{ film.Year }})</div>
             <div class="item item-body">
