@@ -1,7 +1,8 @@
-<ion-view title="Details" id="page2">
+<ion-view title="Details" id="page2" style="background-color:whitesmoke" >
+
     <ion-content padding="true" class="has-header">
         <div class="list card">
-            <div class="item item-divider">{{ film.Title }} ({{ film.Year }})</div>
+            <div class="item item-divider"  style="background-color:white">{{ film.Title }} ({{ film.Year }})</div>
             <div class="item item-body">
                 
                 <div ng-if="film.Poster != null && film.Poster != 'N/A'">
@@ -24,7 +25,38 @@
                 <div ng-if="film.Rating != null && film.Rating != 'N/A'" id="moviedescription-markdown5" style="color:#000000;">
                     <hr>
                     <h2 id="moviedescription-heading2" style="color:#000000;">IMDB Rating </h2>
+                    
+                    <div>
+                        <i ng-if="film.Rating < 1" class="icon ion-android-star-outline"></i>
+                        <i ng-if="film.Rating >= 1 && film.Rating < 2 " class="ion-android-star-half"></i>
+                        <i ng-if="film.Rating >= 2" class="icon ion-android-star"></i>
+
+                        <i ng-if="film.Rating < 3" class="icon ion-android-star-outline"></i>
+                        <i ng-if="film.Rating >= 3 && film.Rating < 4 " class="ion-android-star-half"></i>
+                        <i ng-if="film.Rating >= 4" class="icon ion-android-star"></i>
+
+                        <i ng-if="film.Rating < 5" class="icon ion-android-star-outline"></i>
+                        <i ng-if="film.Rating >= 5 && film.Rating < 6 " class="ion-android-star-half"></i>
+                        <i ng-if="film.Rating >= 6" class="icon ion-android-star"></i>
+
+                        <i ng-if="film.Rating < 7" class="icon ion-android-star-outline"></i>
+                        <i ng-if="film.Rating >= 7 && film.Rating < 8 " class="ion-android-star-half"></i>
+                        <i ng-if="film.Rating >= 8" class="icon ion-android-star"></i>
+
+                        <i ng-if="film.Rating < 9" class="icon ion-android-star-outline"></i>
+                        <i ng-if="film.Rating >= 9 && film.Rating < 10 " class="ion-android-star-half"></i>
+                        <i ng-if="film.Rating >= 10" class="icon ion-android-star"></i>
+                    </div>
+                                        <!--
+                            empty: ion-android-star-outline
+                            half: ion-android-star-half
+                            full: ion-android-star
+
+                            -->
+                    
+                    <!--
                     <p>{{film.Rating}}</p>
+                    -->
                 </div> 
 
                 

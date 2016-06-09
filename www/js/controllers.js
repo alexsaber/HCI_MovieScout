@@ -33,27 +33,30 @@ angular.module('app.controllers', [])
         showBackdrop: true,
         maxWidth: 1500,
         showDelay: 0
-  });
-  
-  $scope.addToCalendar = function (movie) {
+    });
 
-      var title = movie.title;
-      var location = '';
-      var notes = '';
-      var startDate = new Date();
-      var endDate = new Date();
 
-      // clean up the dates a bit
-      startDate.setMinutes(0);
-      endDate.setMinutes(0);
-      startDate.setSeconds(0);
-      endDate.setSeconds(0);
+    $scope.gts = function () {$state.go("menu.globalSrch");};
 
-      // add a few hours to the dates, JS will automatically update the date (+1 day) if necessary
-      startDate.setHours(startDate.getHours() + 24);
-      endDate.setHours(endDate.getHours() + 26);
-      window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
-  };
+    $scope.addToCalendar = function (movie) {
+
+        var title = movie.title;
+        var location = '';
+        var notes = '';
+        var startDate = new Date();
+        var endDate = new Date();
+
+        // clean up the dates a bit
+        startDate.setMinutes(0);
+        endDate.setMinutes(0);
+        startDate.setSeconds(0);
+        endDate.setSeconds(0);
+
+        // add a few hours to the dates, JS will automatically update the date (+1 day) if necessary
+        startDate.setHours(startDate.getHours() + 24);
+        endDate.setHours(endDate.getHours() + 26);
+        window.plugins.calendar.createEventInteractively(title, location, notes, startDate, endDate, this.onSuccess, this.onError);
+    };
   
   HttpService.getInCinema().then(function(searchFilmsRspns) {  
     var inCinemaFims = searchFilmsRspns.data.inTheaters[1].movies;//inTheatersNow: "In Theaters Now"
@@ -111,11 +114,11 @@ angular.module('app.controllers', [])
       filmData.setFilm(inCinemaFims);
       //Popup - Add to which lists?
       var confirmPopup1 = $ionicPopup.confirm({
-          title: 'Add to',
+          title: 'Manage Lists',
           template: '<div ng-controller="checkedCtrl"><ion-checkbox  ng-checked="' + isInwatched + '" ng-model="data22.watched" ng-click="checked1(2)">Watched</ion-checkbox>' +
           '<ion-checkbox ng-checked="' + isInWanted + '" ng-model="data11.wanted" ng-click="checked1(1)">Wanted</ion-checkbox>' +
           '<ion-checkbox ng-checked="' + isInOwned + '" ng-model="data33.owned" ng-click="checked1(3)">Owned</ion-checkbox></div>',
-          okText: 'Add'
+          okText: 'Update'
       });
 
       localStorage.setItem("popup", false);
@@ -265,7 +268,7 @@ angular.module('app.controllers', [])
   
   
   $scope.goToMovieDescr = function (film) {
-    
+
     
       console.log('goToMovieDescr for film: ' + film);
       var videoURL = film.trailer.videoURL;
@@ -314,7 +317,6 @@ angular.module('app.controllers', [])
 .controller('moviedescriptionCtrl', function($scope, filmData) {
   console.log('entered moviedescriptionCtrl ');
   $scope.film = filmData.getFilm();
-  
   
   $scope.openTrailer = function(link){
   // Open in external browser
@@ -421,11 +423,11 @@ angular.module('app.controllers', [])
       filmData.setFilm(film);
 
       var confirmPopup = $ionicPopup.confirm({
-          title: 'Add to',
+          title: 'Manage Lists',
           template: '<div ng-controller="checkedCtrl"><ion-checkbox  ng-checked="' + isInwatched + '" ng-model="data2.watched" ng-click="checked1(2)">Watched</ion-checkbox>' +
           '<ion-checkbox ng-checked="' + isInWanted + '" ng-model="data1.wanted" ng-click="checked1(1)">Wanted</ion-checkbox>' +
           '<ion-checkbox ng-checked="' + isInOwned + '" ng-model="data3.owned" ng-click="checked1(3)">Owned</ion-checkbox></div>',
-          okText: 'Add'
+          okText: 'Update'
       });
 
       localStorage.setItem("popup", false);
@@ -631,6 +633,7 @@ angular.module('app.controllers', [])
 .controller('wantedCtrl', function($scope, $state, filmData) {
   
     console.log("wanted controller");
+    $scope.gts = function () { $state.go("menu.globalSrch"); };
      
         $scope.reload = function()
         {
@@ -728,7 +731,23 @@ angular.module('app.controllers', [])
                 $scope.films[counter].Rating = data.imdbRating;
                 counter++;
               });
-          
+
+              var sort_by = function (field, reverse, primer) {
+
+                  var key = primer ?
+                      function (x) { return primer(x[field]) } :
+                      function (x) { return x[field] };
+
+                  reverse = !reverse ? 1 : -1;
+
+                  return function (a, b) {
+                      return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+                  }
+              };
+
+              if (counter > 0) { $scope.films.sort(sort_by('Year', true, parseInt)); }
+                   
+
               //console.log('setting fondFilms: ' + $scope.films); 
               foundFilmsData.setFoundFilms($scope.films);
               $state.go('menu.globalSrchResults');
@@ -746,7 +765,8 @@ angular.module('app.controllers', [])
 })
  
  .controller('ownedCtrl', function($scope, $state, filmData) {
-    console.log("owned controller");
+     console.log("owned controller");
+     $scope.gts = function () { $state.go("menu.globalSrch"); };
     
      $scope.reload = function()
      {  //thx to http://stackoverflow.com/a/23609343 
@@ -803,7 +823,7 @@ angular.module('app.controllers', [])
  .controller('settingsCtrl', function($scope)
  {
    console.log("settingsCtrl");
-   
+
    $scope.deleteLists = function()
    {
         localStorage.setItem("speichern", false)
@@ -825,7 +845,9 @@ angular.module('app.controllers', [])
  .controller('watchedpageCtrl', function($scope, $state, filmData)
  {
      console.log("watched controller");
-     
+
+     $scope.gts = function () { $state.go("menu.globalSrch"); };
+
      $scope.reload = function()
      {
         //thx to http://stackoverflow.com/a/23609343 

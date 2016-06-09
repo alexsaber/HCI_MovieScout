@@ -1,16 +1,21 @@
-<ion-view title="Owned" id="ownedpage">
+<ion-view title="Owned" id="ownedpage" style="background-color:whitesmoke" >
+
+    <ion-nav-buttons side="right" ng-show="false">
+        <button class="button icon ion-android-search" ng-click="gts()"></button>
+    </ion-nav-buttons>
+
      <ion-content padding="true" class="has-header">
         <form class="list">
             <label class="item item-input">
                 <i class="icon ion-search placeholder-icon"></i>
-                <input type="search" placeholder="Search">
+                <input type="search" placeholder="Search in Owned">
             </label>
         </form>
         
           <ion-list>
             
         <div ng-repeat="film in ownedFilms" class="list card">
-            <div class="item item-divider">{{ film.Title }} ({{ film.Year }})</div>
+            <div class="item item-divider"  style="background-color:white">{{ film.Title }} ({{ film.Year }})</div>
             <div class="item item-body">
                 <div>
                     <img src='{{ film.Poster }}' width="50%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
@@ -19,9 +24,9 @@
                     <p>{{ film.Plot }} </p>
                 </div>
                 <div class="button-bar">
-                    <a ng-controller="globalSrchResultsCtrl" ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive ion-ios-list-outline  button-block icon ion-android-add"></a>
-                    <a ng-click="addToCalendar( {{film}} )" ng-controller="globalSrchResultsCtrl" id="calendar-button1" class="button button-positive  button-block icon ion-android-calendar"></a>
-                    <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button button-positive  button-block icon ion-information-circled"></a>
+                    <a ng-controller="globalSrchResultsCtrl" ng-click="addToWanted({{film}})" id="wanted-button5" class="button button-positive ion-ios-list-outline  button-block icon ion-android-add" style="background-color:cornflowerblue"></a>
+                    <a ng-click="addToCalendar( {{film}} )" ng-controller="globalSrchResultsCtrl" id="calendar-button1" class="button button-positive  button-block icon ion-android-calendar" style="background-color:cornflowerblue"></a>
+                    <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button button-positive  button-block icon ion-information-circled" style="background-color:cornflowerblue"></a>
                 </div>
             </div>
         </div>

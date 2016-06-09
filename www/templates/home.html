@@ -1,8 +1,13 @@
-<ion-view title="Now in cinemas" id="page1" >
+<ion-view title="Now in cinemas" id="page1" style="background-color:whitesmoke" >
+   
+    <ion-nav-buttons side="right" ng-show="false" >
+        <button class="button icon ion-android-search" ng-click="gts()"></button>
+    </ion-nav-buttons>
+
     <ion-content padding="true" class="has-header">
         <ion-list>
-            <div ng-repeat="film in filmsInCinemas" class="list card">
-                <div class="item item-divider">{{ film.title }} ({{ film.year }})</div>
+            <div ng-repeat="film in filmsInCinemas" class="list card" >
+                <div class="item item-divider"  style="background-color:white">{{ film.title }} ({{ film.year }})</div>
                 <div class="item item-body">
                     <div>
                         <img src='{{ film.urlPoster }}' width="50%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
@@ -11,9 +16,9 @@
                         <p>{{ film.simplePlot }} </p>
                     </div>
                     <div class="button-bar">
-                        <a ng-click="addToList({{film}})" id="wanted-button5" class="button button-positive ion-ios-list-outline  button-block icon ion-android-add"></a>
-                        <a ng-click="addToCalendar( {{film}} )" id="calendar-button1" class="button button-positive  button-block icon ion-android-calendar"></a>
-                        <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button button-positive  button-block icon ion-information-circled"></a>
+                        <a ng-click="addToList({{film}})" id="wanted-button5" class="button ion-ios-list-outline button-positive button-block icon ion-android-add" style="background-color:cornflowerblue"></a>
+                        <a ng-click="addToCalendar( {{film}} )" id="calendar-button1" class="button  button-positive  button-block icon ion-android-calendar" style="background-color:cornflowerblue"></a>
+                        <a ng-click="goToMovieDescr({{film}})" id="wanted-button7" class="button  button-positive button-block icon ion-information-circled" style="background-color:cornflowerblue"></a>
                     </div>
                 </div>
             </div>
