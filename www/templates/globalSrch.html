@@ -3,8 +3,14 @@
         
         
         <form class="list">
-            <label  class="item item-input">
-                <input id="searchTitle" type="search" placeholder="Title (Required)" required ng-model="inputvalue"> <br>
+            <label  class="item item-select">
+                <input id="searchTitle" type="search" placeholder="Titel (Required)" required ng-model="inputvalue"> 
+               <!-- <span class="input-label">Type</span>-->
+                <select id="selectedMain">
+                    <option>Titel</option>
+                    <option>Actor</option>
+                    <option>Rating</option>
+                </select>
                 
             </label>
             
@@ -23,6 +29,15 @@
                 </select>
             </label>
 
+            <label class="item item-select">
+                <span class="input-label">Results on Page</span>
+                <select id="selectedResPerPage">
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>all</option>
+                </select>
+            </label>
             
             <button type="submit" ng-click="search()"  class="button button-block button-positive" >
                 Search
