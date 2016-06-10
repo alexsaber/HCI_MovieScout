@@ -135,10 +135,11 @@ angular.module('app.controllers', [])
                   var Poster = inCinemaFims.urlPoster;
                   var Year = inCinemaFims.year;
                   var Plot = inCinemaFims.simplePlot;
+                  var Rating = inCinemaFims.rating;
                   console.log(Title);
                   console.log(Poster);
                   var IMDB = inCinemaFims.idIMDB;
-                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB };
+                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB, 'Rating': filmData.getFilm().Rating, 'Actors': filmData.getFilm().Actors };
 
                   //Parsing-mania
                   var newJSON = JSON.stringify(jsonobj);
@@ -181,7 +182,7 @@ angular.module('app.controllers', [])
                   var Year = inCinemaFims.year;
                   var Plot = inCinemaFims.simplePlot;
                   var IMDB = inCinemaFims.idIMDB;
-                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB };
+                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB, 'Rating': filmData.getFilm().Rating, 'Actors': filmData.getFilm().Actors };
                   var newJSON = JSON.stringify(jsonobj);
                   var oldwatched = JSON.parse(localStorage["watched"]) || [];
                   var newwatched = newJSON;
@@ -225,7 +226,7 @@ angular.module('app.controllers', [])
                   var Year = inCinemaFims.year;
                   var Plot = inCinemaFims.simplePlot;
                   var IMDB = inCinemaFims.idIMDB;
-                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB };
+                  var jsonobj = { 'Title': Title, 'Poster': Poster, 'Year': Year, 'Plot': Plot, 'imdbID': IMDB, 'Rating': filmData.getFilm().Rating, 'Actors': filmData.getFilm().Actors };
                   var newJSON = JSON.stringify(jsonobj);
                   var oldowned = JSON.parse(localStorage["owned"]) || [];
 
