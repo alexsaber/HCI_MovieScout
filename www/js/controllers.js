@@ -60,7 +60,8 @@ angular.module('app.controllers', [])
   
   HttpService.getInCinema().then(function(searchFilmsRspns) {  
     var inCinemaFims = searchFilmsRspns.data.inTheaters[1].movies;//inTheatersNow: "In Theaters Now"
-    console.log(inCinemaFims);
+    console.log("inCinemaFims: " + inCinemaFims);
+    
     $ionicLoading.hide();
     $scope.filmsInCinemas = inCinemaFims;
   });
@@ -270,7 +271,7 @@ angular.module('app.controllers', [])
   
   $scope.goToMovieDescr = function (film) {
 
-    
+        /*
       console.log('goToMovieDescr for film: ' + film);
       var videoURL = film.trailer.videoURL;
       console.log('videoURL is:' + videoURL);
@@ -287,30 +288,58 @@ angular.module('app.controllers', [])
       
       $state.go('menu.moviedescription');
     
-    /*
-      $ionicLoading.show({
-          template: 'Loading...'
-      });
+*/
+    $ionicLoading.show({
+        template: '<img ng-src="img/logo_big.png"><br>Loading...',
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 1500,
+        showDelay: 0
+    });
+
       
       console.log('goToMovieDescr for film: ' + film);
       
-      HttpService.getTrailer_MyAPIFilms(film.idIMDB).then(function(searchRspns) {  
+      HttpService.getMoreInfo_MyAPIFilms(film.idIMDB).then(function(searchRspns) {  
+
         var videoURL = searchRspns.data.movies[0].trailer.videoURL;
         console.log('videoURL is:' + videoURL);
+
         if(typeof videoURL !== 'undefined'){
           console.log('videoURL is:' + videoURL);
           
           var videoURLFiltered = videoURL.replace("www", "m").replace("comVIDEO", "com/video");
           console.log('videoURLFiltered is:' + videoURLFiltered);
-          film.videoURL = videoURLFiltered;
+          var trailer = {
+              videoURL: videoURLFiltered
+          }
+          film.trailer = trailer;
+
         }else
           console.log('videoURL NOT found');
-          
+        var respActors = searchRspns.data.movies[0].actors;
+        if(respActors != null){
+            var length = respActors.length;
+            var actors_str = "";
+            var maxNumOfActors = 6;
+            for(var i = 0; i < length && i < maxNumOfActors; i++){
+                actors_str += respActors[i].actorName;
+                if (i+1 != length && i+1 != maxNumOfActors) 
+                actors_str += ", ";
+            }
+                console.log("actors_str: " + actors_str);
+            film.Actors = actors_str;
+            
+        }else
+            console.log('actors NOT found');
+
+
         filmData.setFilm(film);
         $ionicLoading.hide();
         $state.go('menu.moviedescription');
       });
-      */
+      
   };
 })
    

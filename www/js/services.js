@@ -40,28 +40,32 @@ angular.module('app.services', [])
     if(typeof film.Title === 'undefined'){
       console.log('film.Title is undefined');
       
-      var length = film.actors.length;
-      var actors_str = "";
-      var maxNumOfActors = 6;
-      for(var i = 0; i < length && i < maxNumOfActors; i++){
-        actors_str += film.actors[i].actorName;
-        if (i+1 != length && i+1 != maxNumOfActors) 
-          actors_str += ", ";
-      }
-      console.log("actors_str: " + actors_str);
-      var convertedFilm = {
-        Title: film.title,
-        Year: film.year,
-        Plot: film.simplePlot,
-        Poster: film.urlPoster,
-        Actors: actors_str,
-        Rating: film.rating,
-        trailer: {
-          videoURL: film.trailer.videoURL
+      if(typeof film.trailer !== 'undefined'){
+        var convertedFilm = {
+          Title: film.title,
+          Year: film.year,
+          Plot: film.simplePlot,
+          Poster: film.urlPoster,
+          Actors: film.Actors,
+          Rating: film.rating,
+          trailer: {
+            videoURL: film.trailer.videoURL
+          }
         }
+
+        this.film = convertedFilm;
+      }else{
+        var convertedFilm = {
+          Title: film.title,
+          Year: film.year,
+          Plot: film.simplePlot,
+          Poster: film.urlPoster,
+          Rating: film.rating
+        }
+
+        this.film = convertedFilm;
       }
 
-      this.film = convertedFilm;
     }
     else
       this.film = film;
@@ -116,6 +120,15 @@ angular.module('app.services', [])
          console.log('Get: ', response);
          return response.data;
        });
+   },
+      getMoreInfo_MyAPIFilms : function(idIMDB) {
+     return $http.get('http://www.myapifilms.com/imdb/idIMDB?token=dfd6b103-d4cc-440c-be6b-e66309d5d67e&format=json&language=en-us&trailers=1&actors=1&idIMDB=' + idIMDB)
+       .then(function (response) {
+         console.log('Get: ', response);
+         return response.data;
+       });
    }
  };
 });
+
+
